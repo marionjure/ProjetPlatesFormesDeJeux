@@ -1,0 +1,57 @@
+################FONCTIONS################
+################utilisées################
+Nb de parties gagnées en fonction de "iute" et du  jeu "1"
+
+select count(PSEUDOUSER) from PARTICIPER natural join PARTIE where (PSEUDOUSER="iute" or USE_PSEUDOUSER="iute") and VAINQUEURPARTIE="iute" and IDJEU="1";
+
+Nb de parties jouées à un jeu en fonction de "iute" et jeu "1"
+
+select PSEUDOUSER,USE_PSEUDOUSER,VAINQUEURPARTIE
+from PARTICIPER natural join PARTIE where (PSEUDOUSER="iute" or USE_PSEUDOUSER="iute") and IDJEU="1";
+
+Nb de parties jouées en fonction de "iute" et du  jeu "1"
+
+select count(PSEUDOUSER) from PARTICIPER natural join PARTIE where (PSEUDOUSER="iute" or USE_PSEUDOUSER="iute") and ETATPARTIE=-1 and IDJEU="1";
+
+select * from PARTICIPER where PSEUDOUSER="iute" or USE_PSEUDOUSER="iute";
+
+################EN COURS################
+
+
+Renvoie le numéro d'une partie non finie et non abandonnée (cad en cours)
+
+select distinct(NUMPARTIE) from PARTIE where NUMPARTIE NOT IN(select distinct(NUMPARTIE) from PARTIE where ETATPARTIE<0); 
+
+Renvoie l'id max de la partie en cours en fonction du numéro de partie
+
+select max(IDPARTIE) from PARTIE where NUMPARTIE=16;
+
+select * 
+from PARTICIPER 
+where PSEUDOUSER="iuto" or USE_PSEUDOUSER="iuto" and NUMPARTIE 
+	IN(select distinct(NUMPARTIE) 
+	   from PARTIE 
+	   where NUMPARTIE NOT IN(select distinct(NUMPARTIE) 
+				from PARTIE where ETATPARTIE<0));
+
+
+################REMARQUES################
+certains états de partis sont à 0 puis -1 tandis que d'autres sont toutes à -2
+où sont passées les parties de participer comme le numpartie 5? elles ne sont pas dans partie donc?
+besoin de TESTS
+
+
+################TEST################
+
+select distinct(NUMPARTIE),ETATPARTIE from PARTIE where ETATPARTIE<0;
+
+
+select distinct(NUMPARTIE) from PARTIE;
+
+
+################AUTRE################
+
+Pour bouton jouer:
+
+vérifier que aucun joueur ne cherche de partie, cad qu'aucune invitation à un joueur à null
+Si il n'y a psa d'invitation, créer une invitation savec un joueur à null
